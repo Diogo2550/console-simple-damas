@@ -1,0 +1,26 @@
+JOGO DE DAMAS
+
+1. Tabuleiro 8x8 com 3 linhas horizontais superior e inferior preenchida
+2. Teremos 2 times presentes no jogo:
+	a. vermelho na parte superior
+	b. azul na parte inferior
+3. As peças poderão se mover 1 posição na diagonal frontal
+	a. caso haja uma peça inimiga na diagonal frontal, nossa peça se moverá 2 posições na direção e a peça inimiga será "comida" (removida do jogo)
+		I. caso haja uma peça qualquer na 2° posição, a jogada não poderá ser feita
+	b. caso haja outras peças inimigas em posições adjacentes, o jogador irá comer essa peça
+4. Caso uma peça atinja borda do tabuleiro inversa a do seu início, a peça vira uma dama:
+	a. uma dama pode andar quantas posições desejar em uma diagonal
+	b. caso haja uma peça para "comer", a dama deve parar logo em seguida
+	c. caso seja posível comer outras peças nas linhas diagonais adjacentes, a dama pode
+
+
+
+
+
+
+Objetivos
+
+1. desenvolver os itens 1, 2, 3.a com programação estruturada.
+2. adaptar os itens acima para a orientação a objetos
+3. desenvolver o sistema até o item 4.a
+4. os itens 4.b e 4.c ficarão para outro momento

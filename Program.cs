@@ -30,49 +30,52 @@ tabuleiro[7, 2] = 2;
 tabuleiro[7, 4] = 2;
 tabuleiro[7, 6] = 2;
 
-// 1. mostrar o tabuleiro
-ExibirTabuleiro(tabuleiro);
+bool jogoFinalizou = false;
+while(!jogoFinalizou) {
+    // 1. mostrar o tabuleiro
+    ExibirTabuleiro(tabuleiro);
 
-// 2. selecionar uma peça
-Console.WriteLine("");
-Console.Write("Selecione uma peça (formato: {linha coluna}): ");
-string posPecaInicial = Console.ReadLine();
-int linhaSelecionadaInicial = int.Parse(posPecaInicial.Split(' ')[0]) - 1;
-int colunaSelecionadaInicial = int.Parse(posPecaInicial.Split(' ')[1]) - 1;
+    // 2. selecionar uma peça
+    Console.WriteLine("");
+    Console.Write("Selecione uma peça (formato: {linha coluna}): ");
+    string posPecaInicial = Console.ReadLine();
+    int linhaSelecionadaInicial = int.Parse(posPecaInicial.Split(' ')[0]) - 1;
+    int colunaSelecionadaInicial = int.Parse(posPecaInicial.Split(' ')[1]) - 1;
 
-int pecaSelecionada = tabuleiro[linhaSelecionadaInicial, colunaSelecionadaInicial];
-if(pecaSelecionada == 0) {
-    Console.WriteLine("Não há peça na posição escolhida.");
-} else {
-    Console.WriteLine("A peça escolhida foi " + pecaSelecionada);
-}
+    int pecaSelecionada = tabuleiro[linhaSelecionadaInicial, colunaSelecionadaInicial];
+    if(pecaSelecionada == 0) {
+        Console.WriteLine("Não há peça na posição escolhida.");
+    } else {
+        Console.WriteLine("A peça escolhida foi " + pecaSelecionada);
+    }
 
-// exibir possíveis jogadas
-SimulaTabuleiro(linhaSelecionadaInicial, colunaSelecionadaInicial);
-ExibirTabuleiro(tabuleiroSimulado);
+    // exibir possíveis jogadas
+    SimulaTabuleiro(linhaSelecionadaInicial, colunaSelecionadaInicial);
+    ExibirTabuleiro(tabuleiroSimulado);
 
-// 3. mover a peça
-Console.WriteLine();
-Console.Write("Você deseja fazer a jogada 1 (esquerda) ou 2(direita)?: ");
-int jogada = int.Parse(Console.ReadLine());
+    // 3. mover a peça
+    Console.WriteLine();
+    Console.Write("Você deseja fazer a jogada 1 (esquerda) ou 2(direita)?: ");
+    int jogada = int.Parse(Console.ReadLine());
 
-// para mover a peça, basta mover a peça atual para a cinza (4) no tabuleiro simulado
-// caso a coluna do cinza seja antes da peça, é a jogada 1
-// caso a coluna do cinza seja depois da peça, é a jogada 2
-tabuleiro[linhaSelecionadaInicial, colunaSelecionadaInicial] = 0;
-for(int linha = 0; linha < 8; linha++) {
-    for(int coluna = 0; coluna < 8; coluna++) {
-        if(tabuleiroSimulado[linha, coluna] == 4) {
-            if(jogada == 1 && coluna < colunaSelecionadaInicial) {
-                tabuleiro[linha, coluna] = 1;
-                if(linha > linhaSelecionadaInicial + 1) {
-                    tabuleiro[linha - 1, coluna + 1] = 0;
+    // para mover a peça, basta mover a peça atual para a cinza (4) no tabuleiro simulado
+    // caso a coluna do cinza seja antes da peça, é a jogada 1
+    // caso a coluna do cinza seja depois da peça, é a jogada 2
+    tabuleiro[linhaSelecionadaInicial, colunaSelecionadaInicial] = 0;
+    for(int linha = 0; linha < 8; linha++) {
+        for(int coluna = 0; coluna < 8; coluna++) {
+            if(tabuleiroSimulado[linha, coluna] == 4) {
+                if(jogada == 1 && coluna < colunaSelecionadaInicial) {
+                    tabuleiro[linha, coluna] = 1;
+                    if(linha > linhaSelecionadaInicial + 1) {
+                        tabuleiro[linha - 1, coluna + 1] = 0;
+                    }
                 }
-            }
-            if(jogada == 2 && coluna > colunaSelecionadaInicial) {
-                tabuleiro[linha, coluna] = 1;
-                if(linha > linhaSelecionadaInicial + 1) {
-                    tabuleiro[linha - 1, coluna - 1] = 0;
+                if(jogada == 2 && coluna > colunaSelecionadaInicial) {
+                    tabuleiro[linha, coluna] = 1;
+                    if(linha > linhaSelecionadaInicial + 1) {
+                        tabuleiro[linha - 1, coluna - 1] = 0;
+                    }
                 }
             }
         }
@@ -81,7 +84,6 @@ for(int linha = 0; linha < 8; linha++) {
 
 
 
-ExibirTabuleiro(tabuleiro);
 
 void ExibirTabuleiro(int[,] tabuleiro) {
     Console.Clear();

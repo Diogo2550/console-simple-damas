@@ -32,25 +32,37 @@ tabuleiro[7, 6] = 2;
 
 bool jogoFinalizou = false;
 while(!jogoFinalizou) {
-    // 1. mostrar o tabuleiro
-    ExibirTabuleiro(tabuleiro);
+    int linhaSelecionadaInicial = -1;
+    int colunaSelecionadaInicial = -1;
+    bool podeMover = false;
 
-    // 2. selecionar uma peça
-    Console.WriteLine("");
-    Console.Write("Selecione uma peça (formato: {linha coluna}): ");
-    string posPecaInicial = Console.ReadLine();
-    int linhaSelecionadaInicial = int.Parse(posPecaInicial.Split(' ')[0]) - 1;
-    int colunaSelecionadaInicial = int.Parse(posPecaInicial.Split(' ')[1]) - 1;
+    do {
+        // 1. mostrar o tabuleiro
+        ExibirTabuleiro(tabuleiro);
 
-    int pecaSelecionada = tabuleiro[linhaSelecionadaInicial, colunaSelecionadaInicial];
-    if(pecaSelecionada == 0) {
-        Console.WriteLine("Não há peça na posição escolhida.");
-    } else {
-        Console.WriteLine("A peça escolhida foi " + pecaSelecionada);
-    }
+        // 2. selecionar uma peça
+        Console.WriteLine("");
+        Console.Write("Selecione uma peça (formato: {linha coluna}): ");
+        string posPecaInicial = Console.ReadLine();
+        linhaSelecionadaInicial = int.Parse(posPecaInicial.Split(' ')[0]) - 1;
+        colunaSelecionadaInicial = int.Parse(posPecaInicial.Split(' ')[1]) - 1;
+
+        int pecaSelecionada = tabuleiro[linhaSelecionadaInicial, colunaSelecionadaInicial];
+        if(pecaSelecionada == 0) {
+            Console.WriteLine("Não há peça na posição escolhida.");
+            Console.ReadKey();
+        } else {
+            podeMover = SimulaTabuleiro(linhaSelecionadaInicial, colunaSelecionadaInicial);
+            if(!podeMover) {
+                Console.WriteLine("Não há como se mover com a peça escolhida.");
+                Console.ReadKey();
+            }
+        }
+    } while(!podeMover);
+
+    
 
     // exibir possíveis jogadas
-    SimulaTabuleiro(linhaSelecionadaInicial, colunaSelecionadaInicial);
     ExibirTabuleiro(tabuleiroSimulado);
 
     // 3. mover a peça
@@ -116,11 +128,17 @@ void ExibirTabuleiro(int[,] tabuleiro) {
     }
 }
 
-void SimulaTabuleiro(int linhaSelecionada, int colunaSelecionada) {
+bool SimulaTabuleiro(int linhaSelecionada, int colunaSelecionada) {
     var pecaEsquerda = tabuleiro[linhaSelecionada + 1, colunaSelecionada - 1];
     var pecaDireita = tabuleiro[linhaSelecionada + 1, colunaSelecionada + 1];
     var peca = tabuleiro[linhaSelecionada, colunaSelecionada];
+
+    if(peca == 0) {
+        return false;
+    }
+    
     tabuleiroSimulado = new int[8, 8];
+    bool podeMover = false;
 
     for(int linha = 0; linha < 8; linha++) {
         for(int coluna = 0; coluna < 8; coluna++) {
@@ -156,6 +174,10 @@ void SimulaTabuleiro(int linhaSelecionada, int colunaSelecionada) {
                 }
             }
 
+            if(tabuleiroSimulado[linha, coluna] == 4) {
+                podeMover = true;
+            }
         }
     }
+    return podeMover;
 }

@@ -1,5 +1,7 @@
 ﻿var tabuleiro = new int[8, 8];
+var tabuleiroSimulado = new int[8, 8];
 
+// criação do tabuleiro
 tabuleiro[0, 1] = 1;
 tabuleiro[0, 3] = 1;
 tabuleiro[0, 5] = 1;
@@ -12,6 +14,8 @@ tabuleiro[2, 1] = 1;
 tabuleiro[2, 3] = 1;
 tabuleiro[2, 5] = 1;
 tabuleiro[2, 7] = 1;
+
+tabuleiro[3, 4] = 2;
 
 tabuleiro[5, 0] = 2;
 tabuleiro[5, 2] = 2;
@@ -27,27 +31,7 @@ tabuleiro[7, 4] = 2;
 tabuleiro[7, 6] = 2;
 
 // 1. mostrar o tabuleiro
-Console.WriteLine("   1 2 3 4 5 6 7 8");
-Console.WriteLine();
-for(int linha = 0; linha < 8; linha++) {
-    Console.ForegroundColor = ConsoleColor.White;
-    Console.Write(linha + 1 + "  ");
-    for(int coluna = 0; coluna < 8; coluna++) {
-        var peca = tabuleiro[linha, coluna];
-        Console.ForegroundColor = ConsoleColor.White;
-
-        if(peca == 1) {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write("X ");
-        } else if(peca == 2) {
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.Write("X ");
-        } else {
-            Console.Write("_ ");
-        }
-    }
-    Console.WriteLine();
-}
+ExibirTabuleiro(tabuleiro);
 
 // 2. selecionar uma peça
 Console.WriteLine("");
@@ -64,68 +48,105 @@ if(pecaSelecionada == 0) {
 }
 
 // exibir possíveis jogadas
-Console.Clear();
-Console.WriteLine("   1 2 3 4 5 6 7 8");
-Console.WriteLine();
-for(int linha = 0; linha < 8; linha++) {
-    Console.ForegroundColor = ConsoleColor.White;
-    Console.Write(linha + 1 + "  ");
-    for(int coluna = 0; coluna < 8; coluna++) {
-        var peca = tabuleiro[linha, coluna];
-        Console.ForegroundColor = ConsoleColor.White;
-
-        if(linha == linhaSelecionadaInicial && coluna == colunaSelecionadaInicial) {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.Write("X ");
-        } else if(linha == linhaSelecionadaInicial + 1 && (coluna == colunaSelecionadaInicial - 1 || coluna == colunaSelecionadaInicial + 1)) {
-            Console.ForegroundColor = ConsoleColor.DarkGray;
-            Console.Write("_ ");
-        } else {
-            if(peca == 1) {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Write("X ");
-            } else if(peca == 2) {
-                Console.ForegroundColor = ConsoleColor.Blue;
-                Console.Write("X ");
-            } else {
-                Console.Write("_ ");
-            }
-        }
-    }
-    Console.WriteLine();
-}
+SimulaTabuleiro(linhaSelecionadaInicial, colunaSelecionadaInicial);
+ExibirTabuleiro(tabuleiroSimulado);
 
 // 3. mover a peça
 Console.WriteLine();
 Console.Write("Você deseja fazer a jogada 1 (esquerda) ou 2(direita)?: ");
 int jogada = int.Parse(Console.ReadLine());
 
-int linhaSelecionadaFinal = linhaSelecionadaInicial + 1;
-int colunaSelecionadaFinal = colunaSelecionadaInicial + (jogada == 1 ? -1 : +1);
-
+// para mover a peça, basta mover a peça atual para a cinza (4) no tabuleiro simulado
+// caso a coluna do cinza seja antes da peça, é a jogada 1
+// caso a coluna do cinza seja depois da peça, é a jogada 2
 tabuleiro[linhaSelecionadaInicial, colunaSelecionadaInicial] = 0;
-tabuleiro[linhaSelecionadaFinal, colunaSelecionadaFinal] = pecaSelecionada;
-
-
-Console.Clear();
-Console.WriteLine("   1 2 3 4 5 6 7 8");
-Console.WriteLine();
 for(int linha = 0; linha < 8; linha++) {
-    Console.ForegroundColor = ConsoleColor.White;
-    Console.Write(linha + 1 + "  ");
     for(int coluna = 0; coluna < 8; coluna++) {
-        var peca = tabuleiro[linha, coluna];
-        Console.ForegroundColor = ConsoleColor.White;
-
-        if(peca == 1) {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write("X ");
-        } else if(peca == 2) {
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.Write("X ");
-        } else {
-            Console.Write("_ ");
+        if(tabuleiroSimulado[linha, coluna] == 4) {
+            if(jogada == 1 && coluna < colunaSelecionadaInicial) {
+                tabuleiro[linha, coluna] = 1;
+                if(linha > linhaSelecionadaInicial + 1) {
+                    tabuleiro[linha - 1, coluna + 1] = 0;
+                }
+            }
+            if(jogada == 2 && coluna > colunaSelecionadaInicial) {
+                tabuleiro[linha, coluna] = 1;
+                if(linha > linhaSelecionadaInicial + 1) {
+                    tabuleiro[linha - 1, coluna - 1] = 0;
+                }
+            }
         }
     }
+}
+
+
+
+ExibirTabuleiro(tabuleiro);
+
+void ExibirTabuleiro(int[,] tabuleiro) {
+    Console.Clear();
+    Console.WriteLine("   1 2 3 4 5 6 7 8");
     Console.WriteLine();
+    for(int linha = 0; linha < 8; linha++) {
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.Write(linha + 1 + "  ");
+        for(int coluna = 0; coluna < 8; coluna++) {
+            var peca = tabuleiro[linha, coluna];
+            Console.ForegroundColor = ConsoleColor.White;
+
+            if(peca == 1) {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("X ");
+            } else if(peca == 2) {
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write("X ");
+            } else if(peca == 3) {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write("X ");
+            } else if(peca == 4) {
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                Console.Write("_ ");
+            } else {
+                Console.Write("_ ");
+            }
+        }
+        Console.WriteLine();
+    }
+}
+
+void SimulaTabuleiro(int linhaSelecionada, int colunaSelecionada) {
+    var pecaEsquerda = tabuleiro[linhaSelecionada + 1, colunaSelecionada - 1];
+    var pecaDireita = tabuleiro[linhaSelecionada + 1, colunaSelecionada + 1];
+    tabuleiroSimulado = new int[8, 8];
+
+    for(int linha = 0; linha < 8; linha++) {
+        for(int coluna = 0; coluna < 8; coluna++) {
+            // pula o preenchimento caso já tenha sido preenchido em outra etapa
+            if(tabuleiroSimulado[linha, coluna] != 0)
+                continue;
+
+            // preenche tabuleiro simulado
+            tabuleiroSimulado[linha, coluna] = tabuleiro[linha, coluna];
+            
+            if(linha == linhaSelecionada && coluna == colunaSelecionada) {
+                // se for a peça selecionada
+                tabuleiroSimulado[linha, coluna] = 3;
+            } else if(linha == linhaSelecionada + 1 && coluna == colunaSelecionada - 1) {
+                // se for a diagonal esquerda inferior
+                if(pecaEsquerda == 0) {
+                    tabuleiroSimulado[linha, coluna] = 4;
+                } else {
+                    tabuleiroSimulado[linha + 1, coluna - 1] = 4;
+                }
+            } else if(linha == linhaSelecionada + 1 && coluna == colunaSelecionada + 1) {
+                // se for a diagonal direita inferior
+                if(pecaDireita == 0) {
+                    tabuleiroSimulado[linha, coluna] = 4;
+                } else {
+                    tabuleiroSimulado[linha + 1, coluna + 1] = 4;
+                }
+            }
+
+        }
+    }
 }

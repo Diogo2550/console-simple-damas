@@ -119,6 +119,7 @@ void ExibirTabuleiro(int[,] tabuleiro) {
 void SimulaTabuleiro(int linhaSelecionada, int colunaSelecionada) {
     var pecaEsquerda = tabuleiro[linhaSelecionada + 1, colunaSelecionada - 1];
     var pecaDireita = tabuleiro[linhaSelecionada + 1, colunaSelecionada + 1];
+    var peca = tabuleiro[linhaSelecionada, colunaSelecionada];
     tabuleiroSimulado = new int[8, 8];
 
     for(int linha = 0; linha < 8; linha++) {
@@ -137,15 +138,21 @@ void SimulaTabuleiro(int linhaSelecionada, int colunaSelecionada) {
                 // se for a diagonal esquerda inferior
                 if(pecaEsquerda == 0) {
                     tabuleiroSimulado[linha, coluna] = 4;
-                } else {
-                    tabuleiroSimulado[linha + 1, coluna - 1] = 4;
+                } else if(pecaEsquerda != peca) {
+                    var pecaEsquerda2 = tabuleiro[linhaSelecionada + 2, colunaSelecionada - 2];
+                    if(pecaEsquerda2 == 0) {
+                        tabuleiroSimulado[linha + 1, coluna - 1] = 4;
+                    }
                 }
             } else if(linha == linhaSelecionada + 1 && coluna == colunaSelecionada + 1) {
                 // se for a diagonal direita inferior
                 if(pecaDireita == 0) {
                     tabuleiroSimulado[linha, coluna] = 4;
-                } else {
-                    tabuleiroSimulado[linha + 1, coluna + 1] = 4;
+                } else if(pecaDireita != peca) {
+                    var pecaDireita2 = tabuleiro[linhaSelecionada + 2, colunaSelecionada + 2];
+                    if(pecaDireita2 == 0) {
+                        tabuleiroSimulado[linha + 1, coluna + 1] = 4;
+                    }
                 }
             }
 

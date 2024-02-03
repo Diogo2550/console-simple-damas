@@ -16,6 +16,12 @@ namespace Damas.App.Abstract {
             Height = height;
 
             Pecas = new PosicaoTabuleiro[Width, Height];
+
+            for(int linha = 0; linha < width; linha++) {
+                for(int coluna = 0; coluna < height; coluna++) {
+                    Pecas[linha, coluna] = new PosicaoTabuleiro(linha, coluna, this);
+                }
+            }
         }
 
         public PosicaoTabuleiro PegarPosicao(int linha, int coluna) {
@@ -25,6 +31,9 @@ namespace Damas.App.Abstract {
         }
 
         public void AdicionarPeca(Peca peca, int linha, int coluna) {
+            if(peca == null) {
+                return;
+            }
             var posicao = PegarPosicao(linha, coluna);
             peca.Mover(posicao);
         }
@@ -34,66 +43,67 @@ namespace Damas.App.Abstract {
         }
 
         public Tabuleiro SimularJogada(PosicaoTabuleiro posicao) {
-            if(posicao == null) {
+            if(!posicao.TemPeca()) {
                 return null;
             }
 
-            Tabuleiro tabSimulado = new Tabuleiro(Width, Height);
-            var posicaoEsquerda = posicao.InferiorEsquerdo();
-            var posicaoDireita = posicao.InferiorDireito();
-
+            Tabuleiro tabSimulado = (Tabuleiro)this.Clone();
+            var posicaoSimulado = tabSimulado.PegarPosicao(posicao.Linha, posicao.Coluna);
+            var posicaoEsquerda = posicaoSimulado.InferiorEsquerdo();
+            var posicaoDireita = posicaoSimulado.InferiorDireito();
             bool podeMover = false;
-            for(int linha = 0; linha < 8; linha++) {
-                for(int coluna = 0; coluna < 8; coluna++) {
-                    var posicaoAtual = tabSimulado.PegarPosicao(linha, coluna);
 
-                    // pula o preenchimento caso já tenha sido preenchido em outra etapa
-                    if(posicaoAtual.PegarPeca() != null)
-                        continue;
+            // define a posicao atual como a selecionada
+            tabSimulado.PegarPosicao(posicao.Linha, posicao.Coluna).AlterarStatus(PosicaoTabuleiroStatus.Selecionado);
 
-                    var pecaSimulada = (Peca)posicaoAtual.Clone();
+            // se a posicao esquerda tiver
+            if(posicaoEsquerda.TemPeca()) {
+                var peca = posicaoSimulado.PegarPeca();
+                var pecaEsquerda = posicaoEsquerda.PegarPeca();
 
-                    // preenche tabuleiro simulado
-                    tabSimulado.AdicionarPeca(pecaSimulada);
+                // se a peça for inimiga
+                if(pecaEsquerda.Cor != peca.Cor) {
+                    var posicaoEsquerda2 = posicaoEsquerda.InferiorEsquerdo();
 
-                    if(linha == peca.Posicao.Linha && coluna == peca.Posicao.Coluna) {
-                        // se for a peça selecionada
-                        pecaSimulada.MudarCor(3);
-                    } else if(linha == peca.Linha + 1 && coluna == peca.Coluna - 1) {
-                        // se for a diagonal esquerda inferior
-                        if(posicaoEsquerda == null) {
-                            pecaSimulada.MudarCor(4);
-                            podeMover = true;
-                        } else if(posicaoEsquerda.Cor != peca.Cor) {
-                            var pecaEsquerda2 = this.PegarPeca(peca.Linha + 2, peca.Coluna - 2);
-                            if(pecaEsquerda2 == null) {
-                                pecaSimulada.MudarCor(4);
-                                podeMover = true;
-                            }
-                        }
-                    } else if(linha == peca.Linha + 1 && coluna == peca.Coluna + 1) {
-                        // se for a diagonal direita inferior
-                        if(posicaoDireita == null) {
-                            pecaSimulada.MudarCor(4);
-                            podeMover = true;
-                        } else if(posicaoDireita != peca) {
-                            var pecaDireita2 = this.PegarPeca(peca.Linha + 2, peca.Coluna + 2);
-                            if(pecaDireita2 == null) {
-                                pecaSimulada.MudarCor(4);
-                                podeMover = true;
-                            }
-                        }
+                    // se não tiver peça na próxima posicao
+                    if(posicaoEsquerda2.TemPeca()) {
+                        posicaoEsquerda2.AlterarStatus(PosicaoTabuleiroStatus.Simulado);
+                        podeMover = true;
                     }
                 }
+            } else {
+                // senao: pode andar
+                posicaoEsquerda.AlterarStatus(PosicaoTabuleiroStatus.Simulado);
+                podeMover = true;
             }
 
-            if(podeMover)
-                return tabSimulado;
-            return null;
+            // se a posicao direita tiver peca
+            if(posicaoDireita.TemPeca()) {
+                var peca = posicaoSimulado.PegarPeca();
+                var pecaDireita = posicaoDireita.PegarPeca();
+
+                // se a peça for inimiga
+                if(pecaDireita.Cor != peca.Cor) {
+                    var posicaoDireita2 = posicaoDireita.InferiorDireito();
+
+                    // se não tiver peça na próxima posicao
+                    if(!posicaoDireita2.TemPeca()) {
+                        posicaoDireita2.AlterarStatus(PosicaoTabuleiroStatus.Simulado);
+                        podeMover = true;
+                    }
+                }
+            } else {
+                // senao: pode andar
+                posicaoDireita.AlterarStatus(PosicaoTabuleiroStatus.Simulado);
+                podeMover = true;
+            }
+
+            return podeMover ? tabSimulado : null;
         }
 
 
         public void Exibir() {
+            Console.ForegroundColor = ConsoleColor.White;
             Console.Clear();
             Console.WriteLine("   1 2 3 4 5 6 7 8");
             Console.WriteLine();
@@ -101,25 +111,14 @@ namespace Damas.App.Abstract {
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.Write(linha + 1 + "  ");
                 for(int coluna = 0; coluna < Height; coluna++) {
-                    var peca = PegarPeca(linha, coluna);
-                    Console.ForegroundColor = ConsoleColor.White;
+                    var posicao = PegarPosicao(linha, coluna);
+                    posicao.PegarCor();
+                    Console.ForegroundColor = posicao.PegarCor();
 
-                    if(peca == null) {
+                    if(!posicao.TemPeca()) {
                         Console.Write("_ ");
                     } else {
-                        if(peca.Cor == 1) {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Write("X ");
-                        } else if(peca.Cor == 2) {
-                            Console.ForegroundColor = ConsoleColor.Blue;
-                            Console.Write("X ");
-                        } else if(peca.Cor == 3) {
-                            Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.Write("X ");
-                        } else if(peca.Cor == 4) {
-                            Console.ForegroundColor = ConsoleColor.DarkGray;
-                            Console.Write("_ ");
-                        }
+                        Console.Write("X ");
                     }                    
                 }
                 Console.WriteLine();
@@ -131,7 +130,7 @@ namespace Damas.App.Abstract {
 
             for(int linha = 0; linha < Width; linha++) {
                 for(int coluna = 0; coluna < Height; coluna++) {
-                    var peca = PegarPosicao(linha, coluna).PegarPeca();
+                    var peca = (Peca)PegarPosicao(linha, coluna).PegarPeca()?.Clone();
                     tabClonado.AdicionarPeca(peca, linha, coluna);
                 }
             }

@@ -15,16 +15,19 @@ namespace Damas.App {
         private Tabuleiro tabuleiro;
         private PosicaoTabuleiroStatus status;
 
-        public PosicaoTabuleiro(int linha, int coluna, Peca peca, Tabuleiro tabuleiro) {
+        public PosicaoTabuleiro(int linha, int coluna, Tabuleiro tabuleiro) {
             Linha = linha;
             Coluna = coluna;
-            this.peca = peca;
             this.tabuleiro = tabuleiro;
         }
 
         public void ColocarPeca(Peca peca) {
             status = PosicaoTabuleiroStatus.Preenchido;
             this.peca = peca;
+        }
+
+        public bool TemPeca() {
+            return PegarPeca() != null;
         }
 
         public Peca PegarPeca() {
@@ -61,14 +64,14 @@ namespace Damas.App {
         }
 
         public PosicaoTabuleiro SuperiorDireito() {
-            int linha = Linha + 1;
-            int coluna = Coluna - 1;
+            int linha = Linha - 1;
+            int coluna = Coluna + 1;
             return tabuleiro.PegarPosicao(linha, coluna);
         }
 
         public PosicaoTabuleiro InferiorEsquerdo() {
-            int linha = Linha - 1;
-            int coluna = Coluna + 1;
+            int linha = Linha + 1;
+            int coluna = Coluna - 1;
             return tabuleiro.PegarPosicao(linha, coluna);
         }
 

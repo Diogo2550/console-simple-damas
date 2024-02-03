@@ -24,3 +24,25 @@ Objetivos
 2. adaptar os itens acima para a orientação a objetos
 3. desenvolver o sistema até o item 4.a
 4. os itens 4.b e 4.c ficarão para outro momento
+
+
+
+
+
+
+
+
+
+POO
+
+1. classes
+	- atributos 
+	- métodos
+	- objeto
+2. abstração
+3. visibilidade
+4. herança
+5. encapsulamento
+6. dependência
+7. polimorfismo
+8. tipo referência vs tipo valor

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -34,7 +35,7 @@ namespace Damas.App {
             return this.peca;
         }
 
-        public void RemoverPega() {
+        public void RemoverPeca() {
             peca = null;
             status = PosicaoTabuleiroStatus.Vazio;
         }
@@ -80,6 +81,18 @@ namespace Damas.App {
             int coluna = Coluna + 1;
             return tabuleiro.PegarPosicao(linha, coluna);
         }
+
+        #region Operadores
+        /// <summary>As posições devem pertencer a um mesmo tabuleiro.</summary>
+        public static PosicaoTabuleiro operator -(PosicaoTabuleiro p1, PosicaoTabuleiro p2) {
+            if(p1.tabuleiro != p2.tabuleiro) {
+                return default(PosicaoTabuleiro);
+            }
+            int linha = p1.Linha - p2.Linha;
+            int coluna = p1.Coluna - p2.Coluna;
+            return new PosicaoTabuleiro(linha, coluna, p1.tabuleiro);
+        }
+        #endregion
 
     }
 

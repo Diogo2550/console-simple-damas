@@ -40,6 +40,7 @@ while(!jogoFinalizou) {
     int colunaSelecionada = -1;
     bool podeMover = false;
     Tabuleiro simulacao = null;
+    PosicaoTabuleiro posicaoSelecionada;
 
     do {
 
@@ -53,7 +54,7 @@ while(!jogoFinalizou) {
         linhaSelecionada = int.Parse(posPecaInicial.Split(' ')[0]) - 1;
         colunaSelecionada = int.Parse(posPecaInicial.Split(' ')[1]) - 1;
 
-        PosicaoTabuleiro posicaoSelecionada = tabuleiro.PegarPosicao(linhaSelecionada, colunaSelecionada);
+        posicaoSelecionada = tabuleiro.PegarPosicao(linhaSelecionada, colunaSelecionada);
         Console.WriteLine(posicaoSelecionada.PegarPeca());
         if(!posicaoSelecionada.TemPeca()) {
             Console.WriteLine("Não há peça na posição escolhida.");
@@ -65,7 +66,10 @@ while(!jogoFinalizou) {
                 Console.ReadKey();
             }
         }
+        Console.WriteLine(posicaoSelecionada.TemPeca());
+        Console.ReadKey();
     } while(simulacao == null);
+    Console.WriteLine(posicaoSelecionada.TemPeca());
 
     // exibir possíveis jogadas
     simulacao.Exibir();
@@ -74,6 +78,15 @@ while(!jogoFinalizou) {
     Console.WriteLine();
     Console.Write("Você deseja fazer a jogada 1 (esquerda) ou 2(direita)?: ");
     int jogada = int.Parse(Console.ReadLine());
+
+    PosicaoTabuleiro posicaoJogada;
+    if(jogada == 1) {
+        Console.WriteLine(posicaoSelecionada.TemPeca());
+        posicaoJogada = posicaoSelecionada.PegarPeca().JogadaEsquerda();
+    } else {
+        posicaoJogada = posicaoSelecionada.PegarPeca().JogadaDireita();
+    }
+    tabuleiro.MoverPeca(posicaoSelecionada, posicaoJogada);
 
     
 }

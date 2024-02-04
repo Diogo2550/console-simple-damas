@@ -24,7 +24,7 @@ namespace Damas.App.Abstract {
             }
         }
 
-        public PosicaoTabuleiro PegarPosicao(int linha, int coluna) {
+        public PosicaoTabuleiro? PegarPosicao(int linha, int coluna) {
             if(linha < 0 || linha >= Height || coluna < 0 || coluna >= Width)
                 return null;
             return Pecas[linha, coluna];
@@ -35,11 +35,27 @@ namespace Damas.App.Abstract {
                 return;
             }
             var posicao = PegarPosicao(linha, coluna);
-            peca.Mover(posicao);
+            peca.MoverPara(posicao);
         }
 
         public bool TemPecaNaPosicao(int linha, int coluna) {
             return this.PegarPosicao(linha, coluna).PegarPeca() != null;
+        }
+
+        /// <param name="posicao"></param>
+        /// <param name="jogada">1 para jogada da esquerda. 2 para jogada da direta.</param>
+        public void MoverPeca(PosicaoTabuleiro pInicial, PosicaoTabuleiro pFinal) {
+            var sub = pFinal - pInicial;
+            if(Math.Abs(sub.Coluna) > 1) {
+                // comemos uma peça
+                if(sub.Coluna < 0) {
+                    // esquerda
+                    pInicial.InferiorEsquerdo().RemoverPeca();
+                } else {
+                    pInicial.InferiorDireito().RemoverPeca();
+                }
+            }
+            //pInicial.PegarPeca().MoverPara(pFinal);
         }
 
         public Tabuleiro SimularJogada(PosicaoTabuleiro posicao) {
@@ -48,54 +64,25 @@ namespace Damas.App.Abstract {
             }
 
             Tabuleiro tabSimulado = (Tabuleiro)this.Clone();
+            PosicaoTabuleiro jogada;
             var posicaoSimulado = tabSimulado.PegarPosicao(posicao.Linha, posicao.Coluna);
-            var posicaoEsquerda = posicaoSimulado.InferiorEsquerdo();
-            var posicaoDireita = posicaoSimulado.InferiorDireito();
             bool podeMover = false;
 
             // define a posicao atual como a selecionada
-            tabSimulado.PegarPosicao(posicao.Linha, posicao.Coluna).AlterarStatus(PosicaoTabuleiroStatus.Selecionado);
+            tabSimulado.PegarPosicao(posicaoSimulado.Linha, posicaoSimulado.Coluna).AlterarStatus(PosicaoTabuleiroStatus.Selecionado);
 
             // se a posicao esquerda tiver
-            if(posicaoEsquerda.TemPeca()) {
-                var peca = posicaoSimulado.PegarPeca();
-                var pecaEsquerda = posicaoEsquerda.PegarPeca();
-
-                // se a peça for inimiga
-                if(pecaEsquerda.Cor != peca.Cor) {
-                    var posicaoEsquerda2 = posicaoEsquerda.InferiorEsquerdo();
-
-                    // se não tiver peça na próxima posicao
-                    if(posicaoEsquerda2.TemPeca()) {
-                        posicaoEsquerda2.AlterarStatus(PosicaoTabuleiroStatus.Simulado);
-                        podeMover = true;
-                    }
-                }
-            } else {
-                // senao: pode andar
-                posicaoEsquerda.AlterarStatus(PosicaoTabuleiroStatus.Simulado);
+            jogada = posicaoSimulado.PegarPeca().JogadaEsquerda();
+            if(jogada != null) {
                 podeMover = true;
+                jogada.AlterarStatus(PosicaoTabuleiroStatus.Simulado);
             }
 
             // se a posicao direita tiver peca
-            if(posicaoDireita.TemPeca()) {
-                var peca = posicaoSimulado.PegarPeca();
-                var pecaDireita = posicaoDireita.PegarPeca();
-
-                // se a peça for inimiga
-                if(pecaDireita.Cor != peca.Cor) {
-                    var posicaoDireita2 = posicaoDireita.InferiorDireito();
-
-                    // se não tiver peça na próxima posicao
-                    if(!posicaoDireita2.TemPeca()) {
-                        posicaoDireita2.AlterarStatus(PosicaoTabuleiroStatus.Simulado);
-                        podeMover = true;
-                    }
-                }
-            } else {
-                // senao: pode andar
-                posicaoDireita.AlterarStatus(PosicaoTabuleiroStatus.Simulado);
+            jogada = posicaoSimulado.PegarPeca().JogadaDireita();
+            if(jogada != null) {
                 podeMover = true;
+                jogada.AlterarStatus(PosicaoTabuleiroStatus.Simulado);
             }
 
             return podeMover ? tabSimulado : null;

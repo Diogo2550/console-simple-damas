@@ -20,10 +20,6 @@ namespace Damas.App.Abstract {
         }
 
         public void MoverPara(PosicaoTabuleiro posicao) {
-            if(this.posicao != null) {
-                this.posicao.RemoverPeca();
-            }
-
             this.posicao = posicao;
             posicao.ColocarPeca(this);
         }

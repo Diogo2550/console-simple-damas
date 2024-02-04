@@ -66,8 +66,6 @@ while(!jogoFinalizou) {
                 Console.ReadKey();
             }
         }
-        Console.WriteLine(posicaoSelecionada.TemPeca());
-        Console.ReadKey();
     } while(simulacao == null);
     Console.WriteLine(posicaoSelecionada.TemPeca());
 

@@ -55,7 +55,7 @@ namespace Damas.App.Abstract {
                     pInicial.InferiorDireito().RemoverPeca();
                 }
             }
-            //pInicial.PegarPeca().MoverPara(pFinal);
+            pInicial.PegarPeca().MoverPara(pFinal);
         }
 
         public Tabuleiro SimularJogada(PosicaoTabuleiro posicao) {
@@ -69,7 +69,7 @@ namespace Damas.App.Abstract {
             bool podeMover = false;
 
             // define a posicao atual como a selecionada
-            tabSimulado.PegarPosicao(posicaoSimulado.Linha, posicaoSimulado.Coluna).AlterarStatus(PosicaoTabuleiroStatus.Selecionado);
+            posicaoSimulado.AlterarStatus(PosicaoTabuleiroStatus.Selecionado);
 
             // se a posicao esquerda tiver
             jogada = posicaoSimulado.PegarPeca().JogadaEsquerda();

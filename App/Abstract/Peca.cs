@@ -20,8 +20,11 @@ namespace Damas.App.Abstract {
         }
 
         public void MoverPara(PosicaoTabuleiro posicao) {
+            if(this.posicao != null) {
+                this.posicao.RemoverPeca();
+            }
             this.posicao = posicao;
-            posicao.ColocarPeca(this);
+            this.posicao.ColocarPeca(this);
         }
 
         public PosicaoTabuleiro JogadaEsquerda() {
@@ -35,7 +38,7 @@ namespace Damas.App.Abstract {
                     // se tiver, deve ser inimiga (cor diferente)
                     var posicaoEsquerda2 = posicaoEsquerda.InferiorEsquerdo();
 
-                    if(posicaoEsquerda2.TemPeca()) {
+                    if(posicaoEsquerda2.TemPeca() && posicaoEsquerda2.PegarCor() != Cor) {
                         return posicaoEsquerda2;
                     }
                 }
@@ -55,7 +58,7 @@ namespace Damas.App.Abstract {
                     // se tiver, deve ser inimiga (cor diferente)
                     var posicaoDireita2 = posicaoDireita.InferiorDireito();
 
-                    if(!posicaoDireita2.TemPeca()) {
+                    if(!posicaoDireita2.TemPeca() && posicaoDireita2.PegarCor() != Cor) {
                         return posicaoDireita2;
                     }
                 }
@@ -65,7 +68,7 @@ namespace Damas.App.Abstract {
         }
 
         public object Clone() {
-            return new Peca(Cor, posicao);
+            return new Peca(Cor);
         }
     }
 }

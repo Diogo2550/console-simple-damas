@@ -2,7 +2,7 @@
 
 namespace Damas.App.Partida {
     class PecaAzul : Peca {
-        
+
         public PecaAzul() {
             Cor = ConsoleColor.Blue;
         }

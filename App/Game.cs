@@ -1,7 +1,10 @@
-﻿using Damas.App.Partida;
+﻿using Damas.App.Abstract;
+using Damas.App.Partida;
 
 namespace Damas.App {
     class Game {
+
+        private Type[] Jogadores = new Type[] { typeof(PecaAzul), typeof(PecaVermelha) };
 
         private Tabuleiro tabuleiro;
         private Tabuleiro simulacao;
@@ -17,14 +20,16 @@ namespace Damas.App {
             PosJogo();
         }
 
-        private void LoopDeJogo() {
+        private void LoopDeJogo(int iteracao = 0) {
             // para de executar o jogo quando o mesmo é finalizado
             if(jogoFinalizado) {
                 return;
             }
 
+            Type pecaAJogar = Jogadores[iteracao % Jogadores.Length];
+            
             // selecionar peça
-            var pInicial = SelecionarPeca();
+            var pInicial = SelecionarPeca(pecaAJogar);
 
             // exibe a simulação
             simulacao.Exibir();
@@ -35,13 +40,18 @@ namespace Damas.App {
             // realizar jogada
             RealizarJogada(pInicial, pFinal);
 
+            // TODO: verificar se o jogo finalizou
+
             // recursão: manterá o jogo rodando infinitamente
-            LoopDeJogo();
+            LoopDeJogo(++iteracao);
         }
 
-        private PosicaoTabuleiro SelecionarPeca() {
+        private PosicaoTabuleiro SelecionarPeca(Type tipoPeca) {
             // 1. mostrar o tabuleiro
             tabuleiro.Exibir();
+
+            Console.WriteLine();
+            Console.WriteLine("Rodada do jogador " + tipoPeca.Name + "!");
 
             // 2. selecionar uma peça
             Console.WriteLine();
@@ -51,13 +61,18 @@ namespace Damas.App {
 
             var posicaoSelecionada = tabuleiro.PegarPosicao(linhaSelecionada, colunaSelecionada);
             if(!posicaoSelecionada.TemPeca()) {
-                Console.WriteLine("Não há peça na posição escolhida.");
-                Relogio.EsperarSegundos(3);
+                MensagemError("Não há peça na posição escolhida.");
+                return SelecionarPeca(tipoPeca);
             } else {
+                if(posicaoSelecionada.PegarPeca().GetType() != tipoPeca) {
+                    MensagemError("A peça selecionada deve ser da cor do jogador.");
+                    return SelecionarPeca(tipoPeca);
+                }
+
                 simulacao = tabuleiro.SimularJogada(posicaoSelecionada);
                 if(simulacao == null) {
-                    Console.WriteLine("Não há como se mover com a peça escolhida.");
-                    Relogio.EsperarSegundos(3);
+                    MensagemError("Não há como se mover com a peça escolhida.");
+                    return SelecionarPeca(tipoPeca);
                 }
             }
 
@@ -102,6 +117,16 @@ namespace Damas.App {
         /// </summary>
         private void PosJogo() {
             Console.WriteLine("Partida finalizada. Parabéns!");
+        }
+
+        /// <summary>
+        /// Não deveria estar dentro desta classe.
+        /// </summary>
+        private void MensagemError(string mensagem) {
+            Console.BackgroundColor = ConsoleColor.Red;
+            Console.WriteLine(mensagem);
+            Console.BackgroundColor = ConsoleColor.Black;
+            Relogio.EsperarSegundos(2);
         }
 
         private void CriarTabuleiro(int widthTabuleiro, int heightTabuleiro) {

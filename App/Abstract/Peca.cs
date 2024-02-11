@@ -38,7 +38,7 @@ namespace Damas.App.Abstract {
                     // se tiver, deve ser inimiga (cor diferente)
                     var posicaoEsquerda2 = posicaoEsquerda.InferiorEsquerdo();
 
-                    if(posicaoEsquerda2.TemPeca() && posicaoEsquerda2.PegarCor() != Cor) {
+                    if(posicaoEsquerda2 != null && !posicaoEsquerda2.TemPeca() && posicaoEsquerda2.PegarCor() != Cor) {
                         return posicaoEsquerda2;
                     }
                 }
@@ -58,7 +58,7 @@ namespace Damas.App.Abstract {
                     // se tiver, deve ser inimiga (cor diferente)
                     var posicaoDireita2 = posicaoDireita.InferiorDireito();
 
-                    if(!posicaoDireita2.TemPeca() && posicaoDireita2.PegarCor() != Cor) {
+                    if(posicaoDireita2 != null && !posicaoDireita2.TemPeca() && posicaoDireita2.PegarCor() != Cor) {
                         return posicaoDireita2;
                     }
                 }

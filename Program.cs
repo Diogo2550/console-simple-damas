@@ -70,17 +70,24 @@ while(!jogoFinalizou) {
     simulacao.Exibir();
 
     // 3. mover a peça
-    Console.WriteLine();
-    int jogada = int.Parse(Utils.ReadLine("Você deseja fazer a jogada 1 (esquerda) ou 2(direita)?"));
-
     PosicaoTabuleiro posicaoJogada;
-    do {
-        if(jogada == 1) {
-            posicaoJogada = posicaoSelecionada.PegarPeca().JogadaEsquerda();
-        } else {
-            posicaoJogada = posicaoSelecionada.PegarPeca().JogadaDireita();
-        }
-    } while(posicaoJogada == null);
+    var jogadaEsquerda = posicaoSelecionada.PegarPeca().JogadaEsquerda();
+    var jogadaDireita = posicaoSelecionada.PegarPeca().JogadaDireita();
+    if(jogadaEsquerda != null && jogadaDireita != null) {
+        do {
+            Console.WriteLine();
+            int jogada = int.Parse(Utils.ReadLine("Você deseja fazer a jogada 1 (esquerda) ou 2(direita)?"));
+
+            if(jogada == 1) {
+                posicaoJogada = jogadaEsquerda;
+            } else {
+                posicaoJogada = jogadaDireita;
+            }
+        } while(posicaoJogada == null);
+    } else {
+        posicaoJogada = jogadaEsquerda ?? jogadaDireita;
+    }
+    
     tabuleiro.MoverPeca(posicaoSelecionada, posicaoJogada);
 
     

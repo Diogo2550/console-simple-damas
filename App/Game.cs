@@ -47,58 +47,68 @@ namespace Damas.App {
         }
 
         private PosicaoTabuleiro SelecionarPeca(Type tipoPeca) {
-            // 1. mostrar o tabuleiro
-            tabuleiro.Exibir();
+            try {
+                // 1. mostrar o tabuleiro
+                tabuleiro.Exibir();
 
-            Console.WriteLine();
-            Console.WriteLine("Rodada do jogador " + tipoPeca.Name + "!");
+                Console.WriteLine();
+                Console.WriteLine("Rodada do jogador " + tipoPeca.Name + "!");
 
-            // 2. selecionar uma peça
-            Console.WriteLine();
-            string posPecaInicial = Utils.ReadLine("Selecione uma peça (formato: {linha coluna})");
-            var linhaSelecionada = int.Parse(posPecaInicial.Split(' ')[0]) - 1;
-            var colunaSelecionada = int.Parse(posPecaInicial.Split(' ')[1]) - 1;
+                // 2. selecionar uma peça
+                Console.WriteLine();
+                string posPecaInicial = Utils.ReadLine("Selecione uma peça (formato: {linha coluna})");
+                var linhaSelecionada = int.Parse(posPecaInicial.Split(' ')[0]) - 1;
+                var colunaSelecionada = int.Parse(posPecaInicial.Split(' ')[1]) - 1;
 
-            var posicaoSelecionada = tabuleiro.PegarPosicao(linhaSelecionada, colunaSelecionada);
-            if(!posicaoSelecionada.TemPeca()) {
-                MensagemError("Não há peça na posição escolhida.");
+                var posicaoSelecionada = tabuleiro.PegarPosicao(linhaSelecionada, colunaSelecionada);
+                if(!posicaoSelecionada.TemPeca()) {
+                    MensagemError("Não há peça na posição escolhida.");
+                    return SelecionarPeca(tipoPeca);
+                } else {
+                    if(posicaoSelecionada.PegarPeca().GetType() != tipoPeca) {
+                        MensagemError("A peça selecionada deve ser da cor do jogador.");
+                        return SelecionarPeca(tipoPeca);
+                    }
+
+                    simulacao = tabuleiro.SimularJogada(posicaoSelecionada);
+                    if(simulacao == null) {
+                        MensagemError("Não há como se mover com a peça escolhida.");
+                        return SelecionarPeca(tipoPeca);
+                    }
+                }
+
+                return posicaoSelecionada;
+            } catch(Exception) {
+                MensagemError("Peça inválida selecionada. Tente novamente!");
                 return SelecionarPeca(tipoPeca);
-            } else {
-                if(posicaoSelecionada.PegarPeca().GetType() != tipoPeca) {
-                    MensagemError("A peça selecionada deve ser da cor do jogador.");
-                    return SelecionarPeca(tipoPeca);
-                }
-
-                simulacao = tabuleiro.SimularJogada(posicaoSelecionada);
-                if(simulacao == null) {
-                    MensagemError("Não há como se mover com a peça escolhida.");
-                    return SelecionarPeca(tipoPeca);
-                }
             }
-
-            return posicaoSelecionada;
         }
 
         private PosicaoTabuleiro SelecionarJogada(PosicaoTabuleiro posicaoSelecionada) {
-            PosicaoTabuleiro posicaoJogada;
-            var jogadaEsquerda = posicaoSelecionada.PegarPeca().JogadaEsquerda();
-            var jogadaDireita = posicaoSelecionada.PegarPeca().JogadaDireita();
-            if(jogadaEsquerda != null && jogadaDireita != null) {
-                do {
-                    Console.WriteLine();
-                    int jogada = int.Parse(Utils.ReadLine("Você deseja fazer a jogada 1 (esquerda) ou 2(direita)?"));
+            try {
+                PosicaoTabuleiro posicaoJogada;
+                var jogadaEsquerda = posicaoSelecionada.PegarPeca().JogadaEsquerda();
+                var jogadaDireita = posicaoSelecionada.PegarPeca().JogadaDireita();
+                if(jogadaEsquerda != null && jogadaDireita != null) {
+                    do {
+                        Console.WriteLine();
+                        int jogada = int.Parse(Utils.ReadLine("Você deseja fazer a jogada 1 (esquerda) ou 2(direita)?"));
 
-                    if(jogada == 1) {
-                        posicaoJogada = jogadaEsquerda;
-                    } else {
-                        posicaoJogada = jogadaDireita;
-                    }
-                } while(posicaoJogada == null);
-            } else {
-                posicaoJogada = jogadaEsquerda ?? jogadaDireita;
+                        if(jogada == 1) {
+                            posicaoJogada = jogadaEsquerda;
+                        } else {
+                            posicaoJogada = jogadaDireita;
+                        }
+                    } while(posicaoJogada == null);
+                } else {
+                    posicaoJogada = jogadaEsquerda ?? jogadaDireita;
+                }
+
+                return posicaoJogada;
+            } catch(Exception) {
+                MensagemError("Jogada inválida selecionada. Tente novamente!");
+                return SelecionarJogada(posicaoSelecionada);
             }
-
-            return posicaoJogada;
         }
 
         private void RealizarJogada(PosicaoTabuleiro pInical, PosicaoTabuleiro pFinal) {

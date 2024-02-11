@@ -1,23 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Damas.App.Abstract {
-    class Peca : ICloneable {
+﻿namespace Damas.App.Abstract {
+    abstract class Peca : ICloneable {
 
         public ConsoleColor Cor;
-        private PosicaoTabuleiro posicao;
+        protected PosicaoTabuleiro posicao;
 
-        public Peca(ConsoleColor cor, PosicaoTabuleiro posicao) {
-            Cor = cor;
+        public Peca(PosicaoTabuleiro posicao) {
             this.posicao = posicao;
         }
 
-        public Peca(ConsoleColor cor) {
-            Cor = cor;
-        }
+        public Peca() { }
 
         public void MoverPara(PosicaoTabuleiro posicao) {
             if(this.posicao != null) {
@@ -27,48 +18,26 @@ namespace Damas.App.Abstract {
             this.posicao.ColocarPeca(this);
         }
 
-        public PosicaoTabuleiro JogadaEsquerda() {
-            var posicaoEsquerda = posicao.InferiorEsquerdo();
-
-            // se não tiver peça: é a posição que queremos
-            if(posicaoEsquerda != null) {
-                if(!posicaoEsquerda.TemPeca()) {
-                    return posicaoEsquerda;
-                } else if(posicaoEsquerda.PegarPeca().Cor != Cor) {
+        /// <summary>
+        /// Verifica se é possível mover a peça para uma posicao específica (realizar jogada).
+        /// É necessário enviar a primeira posição e a possível segunda posição.
+        /// </summary>
+        protected PosicaoTabuleiro CalcularJogada(PosicaoTabuleiro p1, PosicaoTabuleiro p2) {
+            if(p1 != null) {
+                if(!p1.TemPeca()) {
+                    return p1;
+                } else if(p1.PegarPeca().Cor != Cor) {
                     // se tiver, deve ser inimiga (cor diferente)
-                    var posicaoEsquerda2 = posicaoEsquerda.InferiorEsquerdo();
-
-                    if(posicaoEsquerda2 != null && !posicaoEsquerda2.TemPeca() && posicaoEsquerda2.PegarCor() != Cor) {
-                        return posicaoEsquerda2;
+                    if(p2 != null && !p2.TemPeca() && p2.PegarCor() != Cor) {
+                        return p2;
                     }
                 }
             }
-
             return null;
         }
 
-        public PosicaoTabuleiro JogadaDireita() {
-            var posicaoDireita = posicao.InferiorDireito();
-
-            // se não tiver peça: é a posição que queremos
-            if(posicaoDireita != null) {
-                if(!posicaoDireita.TemPeca()) {
-                    return posicaoDireita;
-                } else if(posicaoDireita.PegarPeca().Cor != Cor) {
-                    // se tiver, deve ser inimiga (cor diferente)
-                    var posicaoDireita2 = posicaoDireita.InferiorDireito();
-
-                    if(posicaoDireita2 != null && !posicaoDireita2.TemPeca() && posicaoDireita2.PegarCor() != Cor) {
-                        return posicaoDireita2;
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        public object Clone() {
-            return new Peca(Cor);
-        }
+        abstract public PosicaoTabuleiro JogadaEsquerda();
+        abstract public PosicaoTabuleiro JogadaDireita();
+        abstract public object Clone();
     }
 }

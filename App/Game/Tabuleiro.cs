@@ -46,15 +46,22 @@ namespace Damas.App.Abstract {
         /// <param name="jogada">1 para jogada da esquerda. 2 para jogada da direta.</param>
         public void MoverPeca(PosicaoTabuleiro pInicial, PosicaoTabuleiro pFinal) {
             var sub = pFinal - pInicial;
+
+            // se a diferença for > 1, significa que comemos uma peça
             if(Math.Abs(sub.Coluna) > 1) {
-                // comemos uma peça
-                if(sub.Coluna < 0) {
-                    // esquerda
-                    pInicial.InferiorEsquerdo().RemoverPeca();
+                bool comeuEsquerda = sub.Coluna < 0;
+                bool comeuCima = sub.Linha < 0;
+                PosicaoTabuleiro pecaComida;
+
+                if(comeuEsquerda) {
+                    pecaComida = comeuCima ? pInicial.SuperiorEsquerdo() : pInicial.InferiorEsquerdo();
                 } else {
-                    pInicial.InferiorDireito().RemoverPeca();
+                    pecaComida = comeuCima ? pInicial.SuperiorDireito() : pInicial.InferiorDireito();
                 }
+
+                pecaComida.RemoverPeca();
             }
+
             pInicial.PegarPeca().MoverPara(pFinal);
         }
 

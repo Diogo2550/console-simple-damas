@@ -1,44 +1,45 @@
 ﻿using Damas.App;
 using Damas.App.Abstract;
+using Damas.App.Game;
 
 var tabuleiro = new Tabuleiro(8, 8);
 
 // criação do tabuleiro. NÃO É A FORMA IDEAL DE SER FEITO!
 // caso tenha curiosidade, pesquise por Factory.
-tabuleiro.AdicionarPeca(new Peca(ConsoleColor.Blue), 0, 1);
-tabuleiro.AdicionarPeca(new Peca(ConsoleColor.Blue), 0, 3);
-tabuleiro.AdicionarPeca(new Peca(ConsoleColor.Blue), 0, 5);
-tabuleiro.AdicionarPeca(new Peca(ConsoleColor.Blue), 0, 7);
-tabuleiro.AdicionarPeca(new Peca(ConsoleColor.Blue), 1, 0);
-tabuleiro.AdicionarPeca(new Peca(ConsoleColor.Blue), 1, 2);
-tabuleiro.AdicionarPeca(new Peca(ConsoleColor.Blue), 1, 4);
-tabuleiro.AdicionarPeca(new Peca(ConsoleColor.Blue), 1, 6);
-tabuleiro.AdicionarPeca(new Peca(ConsoleColor.Blue), 2, 1);
-tabuleiro.AdicionarPeca(new Peca(ConsoleColor.Blue), 2, 3);
-tabuleiro.AdicionarPeca(new Peca(ConsoleColor.Blue), 2, 5);
-tabuleiro.AdicionarPeca(new Peca(ConsoleColor.Blue), 2, 7);
+tabuleiro.AdicionarPeca(new PecaAzul(), 0, 1);
+tabuleiro.AdicionarPeca(new PecaAzul(), 0, 3);
+tabuleiro.AdicionarPeca(new PecaAzul(), 0, 5);
+tabuleiro.AdicionarPeca(new PecaAzul(), 0, 7);
+tabuleiro.AdicionarPeca(new PecaAzul(), 1, 0);
+tabuleiro.AdicionarPeca(new PecaAzul(), 1, 2);
+tabuleiro.AdicionarPeca(new PecaAzul(), 1, 4);
+tabuleiro.AdicionarPeca(new PecaAzul(), 1, 6);
+tabuleiro.AdicionarPeca(new PecaAzul(), 2, 1);
+tabuleiro.AdicionarPeca(new PecaAzul(), 2, 3);
+tabuleiro.AdicionarPeca(new PecaAzul(), 2, 5);
+tabuleiro.AdicionarPeca(new PecaAzul(), 2, 7);
 
-tabuleiro.AdicionarPeca(new Peca(ConsoleColor.Red), 3, 4);
+tabuleiro.AdicionarPeca(new PecaAzul(), 4, 1);
+tabuleiro.AdicionarPeca(new PecaVermelha(), 3, 4);
 
-tabuleiro.AdicionarPeca(new Peca(ConsoleColor.Red), 5, 0);
-tabuleiro.AdicionarPeca(new Peca(ConsoleColor.Red), 5, 2);
-tabuleiro.AdicionarPeca(new Peca(ConsoleColor.Red), 5, 4);
-tabuleiro.AdicionarPeca(new Peca(ConsoleColor.Red), 5, 6);
-tabuleiro.AdicionarPeca(new Peca(ConsoleColor.Red), 6, 1);
-tabuleiro.AdicionarPeca(new Peca(ConsoleColor.Red), 6, 3);
-tabuleiro.AdicionarPeca(new Peca(ConsoleColor.Red), 6, 5);
-tabuleiro.AdicionarPeca(new Peca(ConsoleColor.Red), 6, 7);
-tabuleiro.AdicionarPeca(new Peca(ConsoleColor.Red), 7, 0);
-tabuleiro.AdicionarPeca(new Peca(ConsoleColor.Red), 7, 2);
-tabuleiro.AdicionarPeca(new Peca(ConsoleColor.Red), 7, 4);
-tabuleiro.AdicionarPeca(new Peca(ConsoleColor.Red), 7, 6);
+tabuleiro.AdicionarPeca(new PecaVermelha(), 5, 0);
+tabuleiro.AdicionarPeca(new PecaVermelha(), 5, 2);
+tabuleiro.AdicionarPeca(new PecaVermelha(), 5, 4);
+tabuleiro.AdicionarPeca(new PecaVermelha(), 5, 6);
+tabuleiro.AdicionarPeca(new PecaVermelha(), 6, 1);
+tabuleiro.AdicionarPeca(new PecaVermelha(), 6, 3);
+tabuleiro.AdicionarPeca(new PecaVermelha(), 6, 5);
+tabuleiro.AdicionarPeca(new PecaVermelha(), 6, 7);
+tabuleiro.AdicionarPeca(new PecaVermelha(), 7, 0);
+tabuleiro.AdicionarPeca(new PecaVermelha(), 7, 2);
+tabuleiro.AdicionarPeca(new PecaVermelha(), 7, 4);
+tabuleiro.AdicionarPeca(new PecaVermelha(), 7, 6);
 
 
 bool jogoFinalizou = false;
 while(!jogoFinalizou) {
-    int linhaSelecionada = -1;
-    int colunaSelecionada = -1;
-    bool podeMover = false;
+    int linhaSelecionada;
+    int colunaSelecionada;
     Tabuleiro simulacao = null;
     PosicaoTabuleiro posicaoSelecionada;
 

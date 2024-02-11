@@ -1,4 +1,5 @@
 ﻿using Damas.App.Abstract;
+using Damas.App.Game;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +7,8 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Damas.App {
+namespace Damas.App
+{
     class PosicaoTabuleiro {
 
         public int Linha;

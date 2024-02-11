@@ -158,9 +158,6 @@ namespace Damas.App {
             tabuleiro.AdicionarPeca(new PecaAzul(), 2, 5);
             tabuleiro.AdicionarPeca(new PecaAzul(), 2, 7);
 
-            tabuleiro.AdicionarPeca(new PecaAzul(), 4, 1);
-            tabuleiro.AdicionarPeca(new PecaVermelha(), 3, 4);
-
             tabuleiro.AdicionarPeca(new PecaVermelha(), 5, 0);
             tabuleiro.AdicionarPeca(new PecaVermelha(), 5, 2);
             tabuleiro.AdicionarPeca(new PecaVermelha(), 5, 4);

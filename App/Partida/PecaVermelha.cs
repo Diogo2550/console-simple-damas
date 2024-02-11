@@ -1,6 +1,6 @@
 ﻿using Damas.App.Abstract;
 
-namespace Damas.App.Game {
+namespace Damas.App.Partida {
     class PecaVermelha : Peca {
 
         public PecaVermelha() {

@@ -1,0 +1,144 @@
+﻿using Damas.App.Partida;
+
+namespace Damas.App {
+    class Game {
+
+        private Tabuleiro tabuleiro;
+        private Tabuleiro simulacao;
+        private bool jogoFinalizado;
+
+        public void CriarPartida(int widthTabuleiro, int heightTabuleiro) {
+            CriarTabuleiro(widthTabuleiro, heightTabuleiro);
+        }
+
+        public void IniciarPartida() {
+            PreJogo();
+            LoopDeJogo();
+            PosJogo();
+        }
+
+        private void LoopDeJogo() {
+            // para de executar o jogo quando o mesmo é finalizado
+            if(jogoFinalizado) {
+                return;
+            }
+
+            // selecionar peça
+            var pInicial = SelecionarPeca();
+
+            // exibe a simulação
+            simulacao.Exibir();
+
+            // seleciona a jogada
+            var pFinal = SelecionarJogada(pInicial);
+
+            // realizar jogada
+            RealizarJogada(pInicial, pFinal);
+
+            // recursão: manterá o jogo rodando infinitamente
+            LoopDeJogo();
+        }
+
+        private PosicaoTabuleiro SelecionarPeca() {
+            // 1. mostrar o tabuleiro
+            tabuleiro.Exibir();
+
+            // 2. selecionar uma peça
+            Console.WriteLine();
+            string posPecaInicial = Utils.ReadLine("Selecione uma peça (formato: {linha coluna})");
+            var linhaSelecionada = int.Parse(posPecaInicial.Split(' ')[0]) - 1;
+            var colunaSelecionada = int.Parse(posPecaInicial.Split(' ')[1]) - 1;
+
+            var posicaoSelecionada = tabuleiro.PegarPosicao(linhaSelecionada, colunaSelecionada);
+            if(!posicaoSelecionada.TemPeca()) {
+                Console.WriteLine("Não há peça na posição escolhida.");
+                Relogio.EsperarSegundos(3);
+            } else {
+                simulacao = tabuleiro.SimularJogada(posicaoSelecionada);
+                if(simulacao == null) {
+                    Console.WriteLine("Não há como se mover com a peça escolhida.");
+                    Relogio.EsperarSegundos(3);
+                }
+            }
+
+            return posicaoSelecionada;
+        }
+
+        private PosicaoTabuleiro SelecionarJogada(PosicaoTabuleiro posicaoSelecionada) {
+            PosicaoTabuleiro posicaoJogada;
+            var jogadaEsquerda = posicaoSelecionada.PegarPeca().JogadaEsquerda();
+            var jogadaDireita = posicaoSelecionada.PegarPeca().JogadaDireita();
+            if(jogadaEsquerda != null && jogadaDireita != null) {
+                do {
+                    Console.WriteLine();
+                    int jogada = int.Parse(Utils.ReadLine("Você deseja fazer a jogada 1 (esquerda) ou 2(direita)?"));
+
+                    if(jogada == 1) {
+                        posicaoJogada = jogadaEsquerda;
+                    } else {
+                        posicaoJogada = jogadaDireita;
+                    }
+                } while(posicaoJogada == null);
+            } else {
+                posicaoJogada = jogadaEsquerda ?? jogadaDireita;
+            }
+
+            return posicaoJogada;
+        }
+
+        private void RealizarJogada(PosicaoTabuleiro pInical, PosicaoTabuleiro pFinal) {
+            tabuleiro.MoverPeca(pInical, pFinal);
+        }
+
+        /// <summary>
+        /// Utilizado para adicionar o comportamento pré jogo. Você pode, por exemplo, solicitar o nome dos
+        /// jogadores e exibir as regras.
+        /// </summary>
+        private void PreJogo() { }
+
+        /// <summary>
+        /// Utilizado para adicionar o comportamento pós jogo. Você pode, por exemplo, exibir a quantidade
+        /// de peças comidas por cada lado e parabenizar o vencedor.
+        /// </summary>
+        private void PosJogo() {
+            Console.WriteLine("Partida finalizada. Parabéns!");
+        }
+
+        private void CriarTabuleiro(int widthTabuleiro, int heightTabuleiro) {
+            tabuleiro = new Tabuleiro(widthTabuleiro, heightTabuleiro);
+
+            // criação do tabuleiro. NÃO É A FORMA IDEAL DE SER FEITO!
+            // caso tenha curiosidade, pesquise por Factory.
+            // também é possível criar o tabuleiro a partir de um .txt
+            tabuleiro.AdicionarPeca(new PecaAzul(), 0, 1);
+            tabuleiro.AdicionarPeca(new PecaAzul(), 0, 3);
+            tabuleiro.AdicionarPeca(new PecaAzul(), 0, 5);
+            tabuleiro.AdicionarPeca(new PecaAzul(), 0, 7);
+            tabuleiro.AdicionarPeca(new PecaAzul(), 1, 0);
+            tabuleiro.AdicionarPeca(new PecaAzul(), 1, 2);
+            tabuleiro.AdicionarPeca(new PecaAzul(), 1, 4);
+            tabuleiro.AdicionarPeca(new PecaAzul(), 1, 6);
+            tabuleiro.AdicionarPeca(new PecaAzul(), 2, 1);
+            tabuleiro.AdicionarPeca(new PecaAzul(), 2, 3);
+            tabuleiro.AdicionarPeca(new PecaAzul(), 2, 5);
+            tabuleiro.AdicionarPeca(new PecaAzul(), 2, 7);
+
+            tabuleiro.AdicionarPeca(new PecaAzul(), 4, 1);
+            tabuleiro.AdicionarPeca(new PecaVermelha(), 3, 4);
+
+            tabuleiro.AdicionarPeca(new PecaVermelha(), 5, 0);
+            tabuleiro.AdicionarPeca(new PecaVermelha(), 5, 2);
+            tabuleiro.AdicionarPeca(new PecaVermelha(), 5, 4);
+            tabuleiro.AdicionarPeca(new PecaVermelha(), 5, 6);
+            tabuleiro.AdicionarPeca(new PecaVermelha(), 6, 1);
+            tabuleiro.AdicionarPeca(new PecaVermelha(), 6, 3);
+            tabuleiro.AdicionarPeca(new PecaVermelha(), 6, 5);
+            tabuleiro.AdicionarPeca(new PecaVermelha(), 6, 7);
+            tabuleiro.AdicionarPeca(new PecaVermelha(), 7, 0);
+            tabuleiro.AdicionarPeca(new PecaVermelha(), 7, 2);
+            tabuleiro.AdicionarPeca(new PecaVermelha(), 7, 4);
+            tabuleiro.AdicionarPeca(new PecaVermelha(), 7, 6);
+        }
+
+    }
+}

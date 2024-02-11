@@ -1,8 +1,8 @@
 ﻿using Damas.App.Abstract;
 
-namespace Damas.App.Game {
+namespace Damas.App.Partida {
     class PecaAzul : Peca {
-
+        
         public PecaAzul() {
             Cor = ConsoleColor.Blue;
         }

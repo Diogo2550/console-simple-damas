@@ -1,11 +1,5 @@
 ﻿using Damas.App.Abstract;
-using Damas.App.Game;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+using Damas.App.Partida;
 
 namespace Damas.App
 {
